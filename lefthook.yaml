@@ -1,0 +1,24 @@
+min_version: 2.0.0
+
+pre-commit:
+  jobs:
+    - name: code-quality
+      group:
+        piped: true
+        jobs:
+          - name: eslint
+            glob: "*.{js,mjs,jsx,ts,tsx,mts}"
+            run: pnpm exec eslint --fix {staged_files}
+            stage_fixed: true
+          - name: prettier
+            glob: "*.{js,mjs,jsx,ts,tsx,mts,json,yaml,yml,md,css}"
+            run: pnpm exec prettier --write {staged_files}
+            stage_fixed: true
+    - name: type-check
+      glob: "*.{ts,tsx,mts}"
+      run: pnpm type:check
+
+prepare-commit-msg:
+  commands:
+    template:
+      run: node scripts/commit-msg.mjs {1}
