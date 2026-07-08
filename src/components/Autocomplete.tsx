@@ -3,12 +3,12 @@ import { ResultDropdown } from "./ResultDropdown";
 import { SearchInput } from "./SearchInput";
 
 export function Autocomplete() {
-	useAutocomplete();
+	const { query, setQuery, results } = useAutocomplete();
 
 	return (
 		<div className="autocomplete">
-			<SearchInput />
-			<ResultDropdown />
+			<SearchInput query={query} setQuery={setQuery} />
+			{!!results.length && <ResultDropdown results={results} />}
 		</div>
 	);
 }

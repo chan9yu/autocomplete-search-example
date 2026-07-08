@@ -1,21 +1,16 @@
-export function ResultDropdown() {
+import type { Result } from "../models/autocomplete";
+import { ResultItem } from "./ResultItem";
+
+type ResultDropdownProps = {
+	results: Result[];
+};
+
+export function ResultDropdown({ results }: ResultDropdownProps) {
 	return (
 		<ul className="dropdown" role="listbox">
-			<li className="option" role="option">
-				java
-			</li>
-			<li className="option" role="option">
-				javascript
-			</li>
-			<li className="option" role="option" aria-selected>
-				java 다운로드
-			</li>
-			<li className="option" role="option">
-				java 설치
-			</li>
-			<li className="option" role="option">
-				javascript 배열
-			</li>
+			{results.map((result) => (
+				<ResultItem key={result.id} text={result.text} />
+			))}
 		</ul>
 	);
 }

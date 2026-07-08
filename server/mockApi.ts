@@ -13,7 +13,7 @@ function parseLimit(raw: string | null) {
 }
 
 function configureServer(server: ViteDevServer) {
-	server.middlewares.use("/autocomplete", async (req, res) => {
+	server.middlewares.use("/api/autocomplete", async (req, res) => {
 		const url = new URL(req.url ?? "", "http://localhost");
 		const query = (url.searchParams.get("q") ?? "").trim();
 		const limit = parseLimit(url.searchParams.get("limit"));
