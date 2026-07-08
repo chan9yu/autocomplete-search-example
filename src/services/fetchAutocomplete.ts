@@ -1,10 +1,10 @@
 import type { AutocompleteResponse } from "../models/autocomplete";
 
-export async function fetchAutocomplete(query: string, signal?: AbortSignal) {
-	const encoded = encodeURIComponent(query);
-	const url = `/api/autocomplete?q=${encoded}&limit=${10}`;
+const RESULT_LIMIT = 10;
 
-	const response = await fetch(url, { signal });
+export async function fetchAutocomplete(query: string, signal?: AbortSignal) {
+	const params = new URLSearchParams({ q: query, limit: String(RESULT_LIMIT) });
+	const response = await fetch(`/api/autocomplete?${params}`, { signal });
 	const data: AutocompleteResponse = await response.json();
 
 	return data.results;

@@ -1,9 +1,13 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import { Autocomplete } from "./components/Autocomplete";
+
+const queryClient = new QueryClient();
 
 export function App() {
 	return (
-		<div>
+		<QueryClientProvider client={queryClient}>
 			<Autocomplete />
-		</div>
+		</QueryClientProvider>
 	);
 }
