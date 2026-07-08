@@ -64,6 +64,13 @@ body {
 	box-shadow: 0 10px 30px rgba(16, 24, 40, 0.1);
 }
 
+.dropdown-status {
+	padding: 12px;
+	font-size: 14px;
+	color: #9aa1ac;
+	text-align: center;
+}
+
 .option {
 	padding: 10px 12px;
 	font-size: 14px;

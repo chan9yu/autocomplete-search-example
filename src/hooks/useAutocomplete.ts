@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 import { fetchAutocomplete } from "../services/fetchAutocomplete";
@@ -12,16 +12,22 @@ export function useAutocomplete() {
 	const [query, setQuery] = useState("");
 	const debouncedQuery = useDebouncedValue({ value: query, delay: DEBOUNCE_MS });
 
-	const { data } = useQuery({
+	const { data, isError } = useQuery({
 		queryKey: ["autocomplete", debouncedQuery],
 		queryFn: ({ signal }) => fetchAutocomplete(debouncedQuery, signal),
 		enabled: debouncedQuery.length >= MIN_CHARS,
-		staleTime: CACHE_TTL_MS
+		staleTime: CACHE_TTL_MS,
+		placeholderData: keepPreviousData
 	});
+
+	const isOpen = query.length >= MIN_CHARS;
 
 	return {
 		query,
 		setQuery,
-		results: query.length >= MIN_CHARS ? (data ?? []) : []
+		results: isOpen ? (data ?? []) : [],
+		isLoading: isOpen && !isError && data === undefined,
+		isError: isOpen && isError,
+		isOpen
 	};
 }
