@@ -19,15 +19,28 @@ export function useAutocomplete() {
 	useEffect(() => {
 		if (debouncedQuery.length < MIN_CHARS) return;
 
+		const abortController = new AbortController();
+		let ignore = false;
+
 		const cached = resultsCache.get(debouncedQuery);
 		const resultsPromise = cached
 			? Promise.resolve(cached)
-			: fetchAutocomplete(debouncedQuery).then((results) => {
+			: fetchAutocomplete(debouncedQuery, abortController.signal).then((results) => {
 					resultsCache.set(debouncedQuery, results);
 					return results;
 				});
 
-		resultsPromise.then(setResults);
+		resultsPromise
+			.then((results) => !ignore && setResults(results))
+			.catch((error) => {
+				const isAbortError = error instanceof DOMException && error.name === "AbortError";
+				if (!isAbortError) throw error;
+			});
+
+		return () => {
+			ignore = true;
+			abortController.abort();
+		};
 	}, [resultsCache, debouncedQuery]);
 
 	return {
