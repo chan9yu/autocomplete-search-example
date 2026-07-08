@@ -1,9 +1,11 @@
-import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+
+import { mockApiPlugin } from "./server/mockApi";
 
 export default defineConfig({
-	plugins: [react()],
+	plugins: [react(), mockApiPlugin()],
 	server: {
-		port: 3150
+		port: 3500
 	}
 });
