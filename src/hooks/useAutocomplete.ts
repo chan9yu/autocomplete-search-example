@@ -3,26 +3,36 @@ import { useEffect, useState } from "react";
 import type { Result } from "../models/autocomplete";
 import { fetchAutocomplete } from "../services/fetchAutocomplete";
 import { useDebouncedValue } from "./useDebouncedValue";
+import { useTtlCache } from "./useTtlCache";
 
 const DEBOUNCE_MS = 300;
+const CACHE_TTL_MS = 5 * 60 * 1000;
 const MIN_CHARS = 2;
 
 export function useAutocomplete() {
 	const [query, setQuery] = useState("");
 	const [results, setResults] = useState<Result[]>([]);
 
+	const resultsCache = useTtlCache<Result[]>(CACHE_TTL_MS);
 	const debouncedQuery = useDebouncedValue({ value: query, delay: DEBOUNCE_MS });
 
 	useEffect(() => {
 		if (debouncedQuery.length < MIN_CHARS) return;
-		fetchAutocomplete(debouncedQuery).then((fetched) => fetched && setResults(fetched));
-	}, [debouncedQuery]);
 
-	const visibleResults = query.length >= MIN_CHARS ? results : [];
+		const cached = resultsCache.get(debouncedQuery);
+		const resultsPromise = cached
+			? Promise.resolve(cached)
+			: fetchAutocomplete(debouncedQuery).then((results) => {
+					resultsCache.set(debouncedQuery, results);
+					return results;
+				});
+
+		resultsPromise.then(setResults);
+	}, [resultsCache, debouncedQuery]);
 
 	return {
 		query,
 		setQuery,
-		results: visibleResults
+		results: query.length >= MIN_CHARS ? results : []
 	};
 }

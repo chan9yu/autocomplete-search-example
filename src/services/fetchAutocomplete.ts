@@ -10,5 +10,6 @@ export async function fetchAutocomplete(query: string) {
 		return data.results;
 	} catch (error) {
 		console.error(error);
+		return [];
 	}
 }
