@@ -1,8 +1,10 @@
-import { createRoot } from 'react-dom/client';
+import "./styles/index.css";
 
-import { App } from './App';
+import { createRoot } from "react-dom/client";
 
-const rootElement = document.getElementById('root');
+import { App } from "./App";
+
+const rootElement = document.getElementById("root");
 if (!rootElement) {
 	throw new Error('Root element with id "root" not found');
 }
