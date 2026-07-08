@@ -6,7 +6,7 @@ export function Autocomplete() {
 	useAutocomplete();
 
 	return (
-		<div>
+		<div className="autocomplete">
 			<SearchInput />
 			<ResultDropdown />
 		</div>
